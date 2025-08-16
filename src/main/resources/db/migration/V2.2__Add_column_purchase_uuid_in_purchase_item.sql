@@ -1,0 +1,1 @@
+alter table purchase_item add if not exists purchase_uuid varchar(36) not null;
