@@ -1,17 +1,22 @@
 package com.gmd.project_accounting_be.modules.project.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.gmd.project_accounting_be.modules.project.dtos.GetProjectDTO;
-import com.gmd.project_accounting_be.modules.project.dtos.UpdateProjectDTO;
+import com.gmd.project_accounting_be.core.constants.BaseErrorMessages;
+import com.gmd.project_accounting_be.modules.project.constants.ProjectErrorMessages;
+import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectDTO;
+import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectDTO;
 import com.gmd.project_accounting_be.modules.project.entities.Project;
-import com.gmd.project_accounting_be.modules.project.services.ProjectServices;
+import com.gmd.project_accounting_be.modules.project.services.ProjectService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 public class ProjectController {
 
-    private final ProjectServices projectServices;
+    private final ProjectService projectService;
 
     @GetMapping("/list")
     public Page<Project> getProjectList(
@@ -45,36 +50,46 @@ public class ProjectController {
                 .size(size)
                 .build();
 
-            return projectServices.getProjectList(param);
+            return projectService.getProjectList(param);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, BaseErrorMessages.GENERAL_ERROR);
         }
     }
 
-    @GetMapping("/delete/{uuid}")
+    @GetMapping("/detail/{uuid}")
+    public Project getProjectDetail(@PathVariable String uuid) {
+        try {
+            return projectService.getByUuid(uuid);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ProjectErrorMessages.NOT_FOUND);
+        }
+    }
+    
+
+    @PostMapping("/delete/{uuid}")
     public void deleteByUuid(@PathVariable String uuid) {
         try {
-            projectServices.deleteByUuid(uuid);
+            projectService.deleteByUuid(uuid);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ProjectErrorMessages.ERROR_DELETE);
         }
     }
     
     @PostMapping("/update/{uuid}")
-    public Project updateByUuid(@PathVariable String uuid, @RequestBody UpdateProjectDTO body) {
+    public Project updateByUuid(@PathVariable String uuid, @Valid @RequestBody UpsertProjectDTO body) {
         try {
-            return projectServices.updateByUuid(uuid, body);
+            return projectService.updateByUuid(uuid, body);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ProjectErrorMessages.ERROR_UPDATE);
         }
     }
     
     @PostMapping("/insert")
-    public Project insertProject(@RequestBody UpdateProjectDTO body) {
+    public Project insertProject(@Valid @RequestBody UpsertProjectDTO body) {
         try {
-            return projectServices.insert(body);
+            return projectService.insert(body);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ProjectErrorMessages.ERROR_INSERT);
         }
     }
 }

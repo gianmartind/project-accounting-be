@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class BaseGetDTO {
+public class BaseGetListDTO {
     public Integer page;
     public Integer size;
 }

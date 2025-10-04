@@ -1,12 +1,8 @@
 create table if not exists purchase (
 	uuid varchar(36) primary key,
 	store_uuid varchar(36) not null,
+	project_uuid varchar(36) not null,
 	purchase_date date not null
-);
-
-create table if not exists purchase_for_project (
-	purchase_uuid varchar(36),
-	project_uuid varchar(36)
 );
 
 create table if not exists purchase_item (

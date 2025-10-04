@@ -1,6 +1,5 @@
-package com.gmd.project_accounting_be.modules.purchase.entities;
+package com.gmd.project_accounting_be.modules.store.entities;
 
-import java.time.LocalDate;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -21,25 +20,20 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "purchase")
-public class Purchase {
+@Table(name = "store")
+public class Store {
     @Id
     @Column(name = "uuid", length = 36)
     @UuidGenerator
     private String uuid;
 
     @NotNull
-    @Column(name = "purchase_date", nullable = false)
-    private LocalDate purchaseDate;
+    @Column(name = "name", nullable = false, unique = true, length = 32)
+    private String name;
 
-    @NotNull
-    @Column(name = "store_uuid", nullable = false, length = 36)
-    private String storeUuid;
+    @Column(name = "address", length = 255)
+    private String address;
 
-    @NotNull
-    @Column(name = "project_uuid", nullable = false, length = 36)
-    private String projectUuid;
-
-    @Column(name = "notes")
+    @Column(name = "notes", length = 255)
     private String notes;
 }

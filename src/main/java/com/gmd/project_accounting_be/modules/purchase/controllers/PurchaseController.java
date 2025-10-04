@@ -3,14 +3,13 @@ package com.gmd.project_accounting_be.modules.purchase.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gmd.project_accounting_be.modules.project.dtos.GetProjectDTO;
-import com.gmd.project_accounting_be.modules.project.entities.Project;
+import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseDTO;
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
 import com.gmd.project_accounting_be.modules.purchase.entities.PurchaseItem;
+import com.gmd.project_accounting_be.modules.purchase.services.PurchaseService;
 
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -25,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 public class PurchaseController {
 
+    private final PurchaseService purchaseService;
+
     @GetMapping("/list")
     public Page<Purchase> getPuchaseList(
             @RequestParam(required = false) Integer page,
@@ -35,6 +36,25 @@ public class PurchaseController {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @GetMapping("/list-types")
+    public List<String> getItemTypeList() {
+        try {
+            return purchaseService.getAllItemTypes();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/insert")
+    public UpsertPurchaseDTO insertPurchase(@RequestBody UpsertPurchaseDTO body) {
+        try {
+            return purchaseService.insert(body);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+    
 
     @PostMapping("/delete/{uuid}")
     public Purchase deletePurchase(@PathVariable String uuid) {
