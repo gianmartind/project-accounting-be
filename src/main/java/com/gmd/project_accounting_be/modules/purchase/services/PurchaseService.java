@@ -1,14 +1,20 @@
 package com.gmd.project_accounting_be.modules.purchase.services;
 
+import java.lang.foreign.Linker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseDTO;
-import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseDetailDTO;
+import com.gmd.project_accounting_be.modules.purchase.dto.request.GetPurchaseListRecordRequestDTO;
+import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseRequestDTO;
+import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseDetailResponseDTO;
+import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.PurchaseListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
 import com.gmd.project_accounting_be.modules.purchase.entities.PurchaseItem;
 import com.gmd.project_accounting_be.modules.purchase.repositories.PurchaseItemRepository;
@@ -25,36 +31,30 @@ public class PurchaseService {
     private final PurchaseItemRepository purchaseItemRepository;
     private final StoreRepository storeRepository;
 
+    public Page<PurchaseListRecordResponseDTO> getPurchaseRecordList(GetPurchaseListRecordRequestDTO param) {
+        Pageable pageable = PageRequest.of(param.getPage(), param.getSize());
+        return purchaseRepository.findAllPurchaseRecord(param, pageable);
+    }
+
     @Transactional
-    public UpsertPurchaseDTO insert(UpsertPurchaseDTO body) {
+    public UpsertPurchaseRequestDTO insert(UpsertPurchaseRequestDTO body) {
         String storeUuid = "";
-        Optional<Store> storeOpt = storeRepository.findByName(body.getStoreName());
-        if (storeOpt.isPresent()) {
-            storeUuid = storeOpt.get().getUuid();
-        } else {
-            Store insertedStore = storeRepository.save(
-                    Store.builder()
-                            .name(body.getStoreName())
-                            .build());
-            storeUuid = insertedStore.getUuid();
-        }
+        storeUuid = findOrInsertStoreByName(body.getStoreName());
         Purchase inserted = purchaseRepository.save(
                 Purchase.builder()
-                        .purchaseDate(body.getDate())
+                        .purchaseDate(body.getPurchaseDate())
                         .storeUuid(storeUuid)
                         .projectUuid(body.getProjectUuid())
                         .notes(body.getNotes())
                         .build());
         List<PurchaseItem> itemsToInsert = new ArrayList<>();
-        for (PurchaseItem item : body.getItems()) {
-            item.setPurchaseUuid(inserted.getUuid());
-            itemsToInsert.add(item);
-        }
+        itemsToInsert.addAll(body.getItems());
+        assignPurchaseUuidToItems(storeUuid, itemsToInsert);
         purchaseItemRepository.saveAll(itemsToInsert);
         return body;
     }
 
-    public PurchaseDetailDTO getDetail(String uuid) {
+    public PurchaseDetailResponseDTO getDetail(String uuid) {
         Optional<Purchase> purchaseOpt = purchaseRepository.findById(uuid);
         if (purchaseOpt.isEmpty()) {
             return null;
@@ -63,7 +63,7 @@ public class PurchaseService {
         Optional<Store> storeOpt = storeRepository.findById(purchase.getStoreUuid());
         String storeName = storeOpt.map(Store::getName).orElse("");
         List<PurchaseItem> items = purchaseItemRepository.findAllByPurchaseUuid(uuid);
-        return PurchaseDetailDTO.builder()
+        return PurchaseDetailResponseDTO.builder()
                 .uuid(purchase.getUuid())
                 .purchaseDate(purchase.getPurchaseDate())
                 .storeName(storeName)
@@ -71,6 +71,59 @@ public class PurchaseService {
                 .notes(purchase.getNotes())
                 .items(items)
                 .build();
+    }
+
+    public PurchaseDetailResponseDTO updateByUuid(String uuid, UpsertPurchaseRequestDTO body) {
+        Optional<Purchase> existing = purchaseRepository.findById(uuid);
+        if (existing.isPresent()) {
+            Purchase existingData = existing.get();
+
+            String newStoreUuid = findOrInsertStoreByName(body.getStoreName());
+            existingData.setStoreUuid(newStoreUuid);
+            existingData.setPurchaseDate(body.getPurchaseDate());
+            existingData.setProjectUuid(body.getProjectUuid());
+            existingData.setNotes(body.getNotes());
+            purchaseRepository.save(existingData);
+
+            // delete all purchase items of this purchase
+            List<PurchaseItem> existingItems = purchaseItemRepository.findAllByPurchaseUuid(uuid);
+            purchaseItemRepository.deleteAll(existingItems);
+
+            // re-insert purchase items with items from body
+            List<PurchaseItem> itemsToInsert = new ArrayList<>();
+            itemsToInsert.addAll(body.getItems());
+            assignPurchaseUuidToItems(uuid, itemsToInsert);
+            purchaseItemRepository.saveAll(itemsToInsert);
+
+            return PurchaseDetailResponseDTO.builder()
+                    .uuid(existingData.getUuid())
+                    .purchaseDate(existingData.getPurchaseDate())
+                    .storeName(body.getStoreName())
+                    .projectUuid(existingData.getProjectUuid())
+                    .notes(existingData.getNotes())
+                    .items(itemsToInsert)
+                    .build();
+        }
+        return null;
+    }
+
+    private void assignPurchaseUuidToItems(String purchaseUuid, List<PurchaseItem> items) {
+        for (PurchaseItem item : items) {
+            item.setPurchaseUuid(purchaseUuid);
+        }
+    }
+
+    private String findOrInsertStoreByName(String storeName) {
+        Optional<Store> storeOpt = storeRepository.findByName(storeName);
+        if (storeOpt.isPresent()) {
+            return storeOpt.get().getUuid();
+        } else {
+            Store insertedStore = storeRepository.save(
+                    Store.builder()
+                            .name(storeName)
+                            .build());
+            return insertedStore.getUuid();
+        }
     }
 
     public List<String> getAllItemTypes() {

@@ -5,8 +5,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.gmd.project_accounting_be.core.constants.BaseErrorMessages;
 import com.gmd.project_accounting_be.modules.project.constants.ProjectErrorMessages;
-import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectDTO;
-import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectDTO;
+import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectRequestDTO;
+import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectRequestDTO;
 import com.gmd.project_accounting_be.modules.project.entities.Project;
 import com.gmd.project_accounting_be.modules.project.services.ProjectService;
 
@@ -41,7 +41,7 @@ public class ProjectController {
         @RequestParam(required = false) Integer size
     ) {
         try {
-            GetProjectDTO param = GetProjectDTO.builder()
+            GetProjectRequestDTO param = GetProjectRequestDTO.builder()
                 .name(name != null ? name : "")
                 .address(address != null ? address : "")
                 .startDate(startDate)
@@ -76,7 +76,7 @@ public class ProjectController {
     }
     
     @PostMapping("/update/{uuid}")
-    public Project updateByUuid(@PathVariable String uuid, @Valid @RequestBody UpsertProjectDTO body) {
+    public Project updateByUuid(@PathVariable String uuid, @Valid @RequestBody UpsertProjectRequestDTO body) {
         try {
             return projectService.updateByUuid(uuid, body);
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class ProjectController {
     }
     
     @PostMapping("/insert")
-    public Project insertProject(@Valid @RequestBody UpsertProjectDTO body) {
+    public Project insertProject(@Valid @RequestBody UpsertProjectRequestDTO body) {
         try {
             return projectService.insert(body);
         } catch (Exception e) {

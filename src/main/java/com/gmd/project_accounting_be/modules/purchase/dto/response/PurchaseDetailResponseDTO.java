@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class PurchaseDetailDTO {
+public class PurchaseDetailResponseDTO {
     private String uuid;
     private String storeName;
     private String projectUuid;

@@ -2,17 +2,23 @@ package com.gmd.project_accounting_be.modules.purchase.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseDTO;
+import com.gmd.project_accounting_be.modules.project.constants.ProjectErrorMessages;
+import com.gmd.project_accounting_be.modules.purchase.dto.request.GetPurchaseListRecordRequestDTO;
+import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseRequestDTO;
+import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseDetailResponseDTO;
+import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.PurchaseListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
-import com.gmd.project_accounting_be.modules.purchase.entities.PurchaseItem;
 import com.gmd.project_accounting_be.modules.purchase.services.PurchaseService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,11 +33,21 @@ public class PurchaseController {
     private final PurchaseService purchaseService;
 
     @GetMapping("/list")
-    public Page<Purchase> getPuchaseList(
+    public Page<PurchaseListRecordResponseDTO> getPuchaseList(
+            @RequestParam(required = false) String storeName,
+            @RequestParam(required = false) String projectName,
+            @RequestParam(required = false) LocalDate purchaseDate,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         try {
-            return null;
+            GetPurchaseListRecordRequestDTO param = GetPurchaseListRecordRequestDTO.builder()
+                .storeName(storeName)
+                .projectName(projectName)
+                .purchaseDate(purchaseDate)
+                .page(page)
+                .size(size) 
+                .build();
+            return purchaseService.getPurchaseRecordList(param);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -47,11 +63,20 @@ public class PurchaseController {
     }
 
     @PostMapping("/insert")
-    public UpsertPurchaseDTO insertPurchase(@RequestBody UpsertPurchaseDTO body) {
+    public UpsertPurchaseRequestDTO insertPurchase(@RequestBody UpsertPurchaseRequestDTO body) {
         try {
             return purchaseService.insert(body);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @GetMapping("/detail/{uuid}")
+    public PurchaseDetailResponseDTO getPurchaseDetail(@PathVariable String uuid) {
+        try {
+            return purchaseService.getDetail(uuid);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ProjectErrorMessages.NOT_FOUND);
         }
     }
     
@@ -66,36 +91,9 @@ public class PurchaseController {
     }
 
     @PostMapping("/update/{uuid}")
-    public Purchase updatePurchase(@PathVariable String uuid, @RequestBody Object body) {
+    public PurchaseDetailResponseDTO updatePurchase(@PathVariable String uuid, @RequestBody UpsertPurchaseRequestDTO body) {
         try {
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    @GetMapping("/item/list/{uuid}")
-    public List<PurchaseItem> getItemList(@PathVariable String uuid) {
-        try {
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    @PostMapping("/item/insert/{uuid}")
-    public PurchaseItem insertItem(@PathVariable String uuid, @RequestBody Object body) {
-        try {
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
-    @PostMapping("/item/delete/{uuid}")
-    public PurchaseItem deleteItem(@PathVariable String uuid) {
-        try {
-            return null;
+            return purchaseService.updateByUuid(uuid, body);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

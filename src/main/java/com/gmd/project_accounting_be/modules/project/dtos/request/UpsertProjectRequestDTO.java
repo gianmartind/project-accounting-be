@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UpsertProjectDTO {
+public class UpsertProjectRequestDTO {
     @NotBlank
     private String name;
 
@@ -22,7 +22,6 @@ public class UpsertProjectDTO {
     @NotNull
     private LocalDate startDate;
 
-    @NotNull
     private LocalDate endDate;
 
     @Size(max = 255)

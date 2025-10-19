@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UpsertPurchaseDTO {
+public class UpsertPurchaseRequestDTO {
     @NotBlank
     private String storeName;
     
@@ -23,7 +23,7 @@ public class UpsertPurchaseDTO {
     private String projectUuid;
 
     @NotNull
-    private LocalDate date;
+    private LocalDate purchaseDate;
 
     @Size(max = 255)
     private String notes;

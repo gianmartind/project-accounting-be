@@ -4,11 +4,12 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectDTO;
-import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectDTO;
+import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectRequestDTO;
+import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectRequestDTO;
 import com.gmd.project_accounting_be.modules.project.entities.Project;
 import com.gmd.project_accounting_be.modules.project.repositories.ProjectRepository;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 
@@ -20,10 +21,11 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
 
-    public Page<Project> getProjectList(GetProjectDTO param) {
+    public Page<Project> getProjectList(GetProjectRequestDTO param) {
         Pageable pageable = PageRequest.of(param.getPage(), param.getSize());
+        Specification<Project> spec = ProjectSpecification.getSpecification(param);
 
-        return projectRepository.findAll(pageable);
+        return projectRepository.findAll(spec, pageable);
     }
 
     public void deleteByUuid(String uuid) {
@@ -42,7 +44,7 @@ public class ProjectService {
         }
     }
 
-    public Project updateByUuid(String uuid, UpsertProjectDTO body) {
+    public Project updateByUuid(String uuid, UpsertProjectRequestDTO body) {
         Optional<Project> existing = projectRepository.findById(uuid);
         if (existing.isPresent()) {
             Project existingData = existing.get();
@@ -60,7 +62,7 @@ public class ProjectService {
         }
     }
 
-    public Project insert(UpsertProjectDTO body) {
+    public Project insert(UpsertProjectRequestDTO body) {
         Project toInsert = Project.builder()
                 .name(body.getName())
                 .address(body.getAddress())
