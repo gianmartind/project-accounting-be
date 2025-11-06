@@ -34,19 +34,23 @@ public class PurchaseController {
 
     @GetMapping("/list")
     public Page<PurchaseListRecordResponseDTO> getPuchaseList(
-            @RequestParam(required = false) String storeName,
-            @RequestParam(required = false) String projectName,
-            @RequestParam(required = false) LocalDate purchaseDate,
+            @RequestParam(name = "store_name", required = false) String storeName,
+            @RequestParam(name = "store_uuid", required = false) String storeUuid,
+            @RequestParam(name = "project_name", required = false) String projectName,
+            @RequestParam(name = "project_uuid", required = false) String projectUuid,
+            @RequestParam(name = "purchase_date", required = false) LocalDate purchaseDate,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         try {
             GetPurchaseListRecordRequestDTO param = GetPurchaseListRecordRequestDTO.builder()
-                .storeName(storeName)
-                .projectName(projectName)
-                .purchaseDate(purchaseDate)
-                .page(page)
-                .size(size) 
-                .build();
+                    .storeName(storeName)
+                    .storeUuid(storeUuid)
+                    .projectName(projectName)
+                    .projectUuid(projectUuid)
+                    .purchaseDate(purchaseDate)
+                    .page(page)
+                    .size(size)
+                    .build();
             return purchaseService.getPurchaseRecordList(param);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
@@ -79,7 +83,6 @@ public class PurchaseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ProjectErrorMessages.NOT_FOUND);
         }
     }
-    
 
     @PostMapping("/delete/{uuid}")
     public Purchase deletePurchase(@PathVariable String uuid) {
@@ -91,7 +94,8 @@ public class PurchaseController {
     }
 
     @PostMapping("/update/{uuid}")
-    public PurchaseDetailResponseDTO updatePurchase(@PathVariable String uuid, @RequestBody UpsertPurchaseRequestDTO body) {
+    public PurchaseDetailResponseDTO updatePurchase(@PathVariable String uuid,
+            @RequestBody UpsertPurchaseRequestDTO body) {
         try {
             return purchaseService.updateByUuid(uuid, body);
         } catch (Exception e) {
