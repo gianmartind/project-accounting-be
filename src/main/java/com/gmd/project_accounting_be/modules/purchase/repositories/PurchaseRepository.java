@@ -1,5 +1,6 @@
 package com.gmd.project_accounting_be.modules.purchase.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -35,4 +36,16 @@ public interface PurchaseRepository extends CrudRepository<Purchase, String>, Jp
     Page<PurchaseListRecordResponseDTO> findAllPurchaseRecord(
             @Param("filter") GetPurchaseListRecordRequestDTO filter,
             Pageable pageable);
+
+    @Query(value = """
+            SELECT DISTINCT pj.name
+            FROM purchase p JOIN project pj ON p.project_uuid = pj.uuid
+            """, nativeQuery = true)
+    List<String> findAllAvailableProject();
+
+    @Query(value = """
+            SELECT DISTINCT s.name
+            FROM purchase p JOIN store s ON p.store_uuid = s.uuid
+            """, nativeQuery = true)
+    List<String> findAllAvailableStore();
 }

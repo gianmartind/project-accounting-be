@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.gmd.project_accounting_be.modules.project.constants.ProjectErrorMessages;
 import com.gmd.project_accounting_be.modules.purchase.dto.request.GetPurchaseListRecordRequestDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseRequestDTO;
+import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseAvailableFilterOptionsResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseDetailResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.PurchaseListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
@@ -102,4 +103,14 @@ public class PurchaseController {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    @GetMapping("/available-filter-options")
+    public PurchaseAvailableFilterOptionsResponseDTO getAvailableFilterOptions() {
+        try {
+            return purchaseService.getAvailableFilterOptions();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
 }
