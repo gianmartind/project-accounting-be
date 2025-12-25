@@ -1,4 +1,4 @@
-package com.gmd.project_accounting_be.modules.purchase.entities;
+package com.gmd.project_accounting_be.modules.purchase_item.entities;
 
 import java.math.BigDecimal;
 
@@ -41,6 +41,12 @@ public class PurchaseItem {
 
     @Column(name = "price")
     private BigDecimal price;
+
+    @Column(name = "brand")
+    private String brand;
+
+    @Column(name = "category")
+    private String category;
 
     @Column(name = "purchase_uuid")
     private String purchaseUuid;

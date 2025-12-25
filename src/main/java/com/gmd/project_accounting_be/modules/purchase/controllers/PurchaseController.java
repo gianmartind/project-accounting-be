@@ -13,13 +13,14 @@ import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.P
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
 import com.gmd.project_accounting_be.modules.purchase.services.PurchaseService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/purchase")
 @RequiredArgsConstructor
+@Validated
 public class PurchaseController {
 
     private final PurchaseService purchaseService;
@@ -58,17 +60,8 @@ public class PurchaseController {
         }
     }
 
-    @GetMapping("/list-types")
-    public List<String> getItemTypeList() {
-        try {
-            return purchaseService.getAllItemTypes();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
     @PostMapping("/insert")
-    public UpsertPurchaseRequestDTO insertPurchase(@RequestBody UpsertPurchaseRequestDTO body) {
+    public UpsertPurchaseRequestDTO insertPurchase(@RequestBody @Valid UpsertPurchaseRequestDTO body) {
         try {
             return purchaseService.insert(body);
         } catch (Exception e) {
@@ -96,7 +89,7 @@ public class PurchaseController {
 
     @PostMapping("/update/{uuid}")
     public PurchaseDetailResponseDTO updatePurchase(@PathVariable String uuid,
-            @RequestBody UpsertPurchaseRequestDTO body) {
+            @RequestBody @Valid UpsertPurchaseRequestDTO body) {
         try {
             return purchaseService.updateByUuid(uuid, body);
         } catch (Exception e) {

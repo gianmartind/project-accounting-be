@@ -3,7 +3,7 @@ package com.gmd.project_accounting_be.modules.purchase.dto.response;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.gmd.project_accounting_be.modules.purchase.entities.PurchaseItem;
+import com.gmd.project_accounting_be.modules.purchase_item.entities.PurchaseItem;
 
 import lombok.Builder;
 import lombok.Getter;

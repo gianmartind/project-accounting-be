@@ -1,6 +1,5 @@
 package com.gmd.project_accounting_be.modules.purchase.services;
 
-import java.lang.foreign.Linker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +16,9 @@ import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseAvail
 import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseDetailResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.PurchaseListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
-import com.gmd.project_accounting_be.modules.purchase.entities.PurchaseItem;
-import com.gmd.project_accounting_be.modules.purchase.repositories.PurchaseItemRepository;
 import com.gmd.project_accounting_be.modules.purchase.repositories.PurchaseRepository;
+import com.gmd.project_accounting_be.modules.purchase_item.entities.PurchaseItem;
+import com.gmd.project_accounting_be.modules.purchase_item.repositories.PurchaseItemRepository;
 import com.gmd.project_accounting_be.modules.store.entities.Store;
 import com.gmd.project_accounting_be.modules.store.repositories.StoreRepository;
 
@@ -41,13 +40,13 @@ public class PurchaseService {
     public UpsertPurchaseRequestDTO insert(UpsertPurchaseRequestDTO body) {
         String storeUuid = "";
         storeUuid = findOrInsertStoreByName(body.getStoreName());
-        Purchase inserted = purchaseRepository.save(
-                Purchase.builder()
+        Purchase toInsert = Purchase.builder()
                         .purchaseDate(body.getPurchaseDate())
                         .storeUuid(storeUuid)
                         .projectUuid(body.getProjectUuid())
                         .notes(body.getNotes())
-                        .build());
+                        .build();
+        purchaseRepository.save(toInsert);
         List<PurchaseItem> itemsToInsert = new ArrayList<>();
         itemsToInsert.addAll(body.getItems());
         assignPurchaseUuidToItems(storeUuid, itemsToInsert);
@@ -133,14 +132,6 @@ public class PurchaseService {
                             .name(storeName)
                             .build());
             return insertedStore.getUuid();
-        }
-    }
-
-    public List<String> getAllItemTypes() {
-        try {
-            return purchaseItemRepository.findAllDistinctTypes();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
         }
     }
 }
