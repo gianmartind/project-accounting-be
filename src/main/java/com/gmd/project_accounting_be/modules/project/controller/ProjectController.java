@@ -17,6 +17,7 @@ import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/project")
 @RequiredArgsConstructor
+@Validated
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -76,7 +78,7 @@ public class ProjectController {
     }
     
     @PostMapping("/update/{uuid}")
-    public Project updateByUuid(@PathVariable String uuid, @Valid @RequestBody UpsertProjectRequestDTO body) {
+    public Project updateByUuid(@PathVariable String uuid, @RequestBody @Valid UpsertProjectRequestDTO body) {
         try {
             return projectService.updateByUuid(uuid, body);
         } catch (Exception e) {
@@ -85,7 +87,7 @@ public class ProjectController {
     }
     
     @PostMapping("/insert")
-    public Project insertProject(@Valid @RequestBody UpsertProjectRequestDTO body) {
+    public Project insertProject(@RequestBody @Valid UpsertProjectRequestDTO body) {
         try {
             return projectService.insert(body);
         } catch (Exception e) {
