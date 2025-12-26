@@ -7,6 +7,7 @@ import com.gmd.project_accounting_be.core.constants.BaseErrorMessages;
 import com.gmd.project_accounting_be.modules.project.constants.ProjectErrorMessages;
 import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectRequestDTO;
 import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectRequestDTO;
+import com.gmd.project_accounting_be.modules.project.dtos.response.projections.ProjectListRecordResponse;
 import com.gmd.project_accounting_be.modules.project.entities.Project;
 import com.gmd.project_accounting_be.modules.project.services.ProjectService;
 
@@ -34,22 +35,28 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/list")
-    public Page<Project> getProjectList(
+    public Page<ProjectListRecordResponse> getProjectList(
         @RequestParam(required = false) String name, 
         @RequestParam(required = false) String address,
-        @RequestParam(required = false) LocalDate startDate,
-        @RequestParam(required = false) LocalDate endDate,
+        @RequestParam(name = "start_date_from", required = false) LocalDate startDateFrom,
+        @RequestParam(name = "start_date_to", required = false) LocalDate startDateTo,
+        @RequestParam(name = "end_date_from", required = false) LocalDate endDateFrom,
+        @RequestParam(name = "end_date_to", required = false) LocalDate endDateTo,
         @RequestParam(required = false) Integer page,
-        @RequestParam(required = false) Integer size
+        @RequestParam(required = false) Integer size,
+        @RequestParam(required = false) String sort
     ) {
         try {
             GetProjectRequestDTO param = GetProjectRequestDTO.builder()
-                .name(name != null ? name : "")
-                .address(address != null ? address : "")
-                .startDate(startDate)
-                .endDate(endDate)
+                .name(name)
+                .address(address)
+                .startDateFrom(startDateFrom)
+                .startDateTo(startDateTo)
+                .endDateFrom(endDateFrom)
+                .endDateTo(endDateTo)
                 .page(page)
                 .size(size)
+                .sort(sort)
                 .build();
 
             return projectService.getProjectList(param);

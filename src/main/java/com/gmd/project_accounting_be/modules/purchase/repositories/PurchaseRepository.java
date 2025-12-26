@@ -31,6 +31,8 @@ public interface PurchaseRepository extends CrudRepository<Purchase, String>, Jp
             AND (CAST(:#{#filter.storeName} AS VARCHAR) IS NULL OR LOWER(s.name) LIKE LOWER(CAST(:#{#filter.storeName} AS VARCHAR)))
             AND (CAST(:#{#filter.projectUuid} AS VARCHAR) IS NULL OR pj.uuid = CAST(:#{#filter.projectUuid} AS VARCHAR))
             AND (CAST(:#{#filter.storeUuid} AS VARCHAR) IS NULL OR s.uuid = CAST(:#{#filter.storeUuid} AS VARCHAR))
+            AND (CAST(:#{#filter.purchaseDateFrom} AS DATE) IS NULL OR p.purchase_date >= CAST(:#{#filter.purchaseDateFrom} AS DATE))
+            AND (CAST(:#{#filter.purchaseDateTo} AS DATE) IS NULL OR p.purchase_date <= CAST(:#{#filter.purchaseDateTo} AS DATE))
             GROUP BY p.uuid, pj.name, pj.uuid, s.name, s.uuid, p.purchase_date
             """, nativeQuery = true)
     Page<PurchaseListRecordResponseDTO> findAllPurchaseRecord(

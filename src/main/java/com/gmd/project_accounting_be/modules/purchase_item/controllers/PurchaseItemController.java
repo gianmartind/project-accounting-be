@@ -9,6 +9,7 @@ import com.gmd.project_accounting_be.modules.purchase_item.services.PurchaseItem
 
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -36,8 +37,15 @@ public class PurchaseItemController {
         @RequestParam(name = "store_uuid", required = false) String storeUuid,
         @RequestParam(name = "purchase_date_from", required = false) LocalDate purchaseDateFrom,
         @RequestParam(name = "purchase_date_to", required = false) LocalDate purchaseDateTo,
+        @RequestParam(name = "amount_min", required = false) Integer amountMin,
+        @RequestParam(name = "amount_max", required = false) Integer amountMax,
+        @RequestParam(name = "price_min", required = false) BigDecimal priceMin,
+        @RequestParam(name = "price_max", required = false) BigDecimal priceMax,
+        @RequestParam(name = "total_price_min", required = false) BigDecimal totalPriceMin,
+        @RequestParam(name = "total_price_max", required = false) BigDecimal totalPriceMax,
         @RequestParam(required = false) Integer page,
-        @RequestParam(required = false) Integer size
+        @RequestParam(required = false) Integer size,
+        @RequestParam(required = false) String sort
     ) {
         try {
             GetPurchaseItemListRequestDTO param = GetPurchaseItemListRequestDTO.builder()
@@ -52,8 +60,15 @@ public class PurchaseItemController {
                 .storeUuid(storeUuid)
                 .purchaseDateFrom(purchaseDateFrom)
                 .purchaseDateTo(purchaseDateTo)
+                .amountMin(amountMin)
+                .amountMax(amountMax)
+                .priceMin(priceMin)
+                .priceMax(priceMax)
+                .totalPriceMin(totalPriceMin)
+                .totalPriceMax(totalPriceMax)
                 .page(page)
                 .size(size)
+                .sort(sort)
                 .build();
             return purchaseItemService.getPurchaseItemRecordList(param);
         } catch (Exception e) {

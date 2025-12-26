@@ -14,6 +14,8 @@ import lombok.experimental.SuperBuilder;
 public class GetProjectRequestDTO extends BaseGetListRequestDTO{
     public String name;
     public String address;
-    public LocalDate startDate;
-    public LocalDate endDate;
+    public LocalDate startDateFrom;
+    public LocalDate startDateTo;
+    public LocalDate endDateFrom;
+    public LocalDate endDateTo;
 }

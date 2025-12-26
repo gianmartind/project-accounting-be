@@ -10,4 +10,5 @@ import lombok.experimental.SuperBuilder;
 public class BaseGetListRequestDTO {
     public Integer page;
     public Integer size;
+    public String sort;
 }

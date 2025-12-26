@@ -35,7 +35,8 @@ public interface PurchaseItemRepository extends CrudRepository<PurchaseItem, Str
     @Query(value = """
             SELECT pc.purchase_date as purchaseDate, st.name as storeName, pj.name as projectName, 
                     pi.name, pi.type, pi.brand, pi.category, pi.amount, pi.unit, 
-                    pi.price, pi.amount * pi.price as totalPrice 
+                    pi.price, pi.amount * pi.price as totalPrice, 
+                    pc.uuid as purchaseUuid, st.uuid as storeUuid, pj.uuid as projectUuid
             FROM purchase_item pi
                 JOIN purchase pc ON pi.purchase_uuid = pc.uuid
                 JOIN store st ON pc.store_uuid = st.uuid
@@ -47,10 +48,16 @@ public interface PurchaseItemRepository extends CrudRepository<PurchaseItem, Str
                 AND (CAST(:#{#filter.category} AS VARCHAR) IS NULL OR LOWER(pi.category) LIKE LOWER(CAST(:#{#filter.category} AS VARCHAR)))
                 AND (CAST(:#{#filter.projectName} AS VARCHAR) IS NULL OR LOWER(pj.name) LIKE LOWER(CAST(:#{#filter.projectName} AS VARCHAR)))
                 AND (CAST(:#{#filter.projectUuid} AS VARCHAR) IS NULL OR pj.uuid = CAST(:#{#filter.projectUuid} AS VARCHAR))
-                AND (CAST(:#{#filter.storeName} AS VARCHAR) IS NULL OR LOWER(s.name) LIKE LOWER(CAST(:#{#filter.storeName} AS VARCHAR)))
-                AND (CAST(:#{#filter.storeUuid} AS VARCHAR) IS NULL OR s.uuid = CAST(:#{#filter.storeUuid} AS VARCHAR))
-                AND (CAST(:#{#filter.purchaseDateFrom} AS DATE) IS NULL OR p.purchase_date >= CAST(:#{#filter.purchaseDateFrom} AS DATE))
-                AND (CAST(:#{#filter.purchaseDateTo} AS DATE) IS NULL OR p.purchase_date <= CAST(:#{#filter.purchaseDateTo} AS DATE))
+                AND (CAST(:#{#filter.storeName} AS VARCHAR) IS NULL OR LOWER(st.name) LIKE LOWER(CAST(:#{#filter.storeName} AS VARCHAR)))
+                AND (CAST(:#{#filter.storeUuid} AS VARCHAR) IS NULL OR st.uuid = CAST(:#{#filter.storeUuid} AS VARCHAR))
+                AND (CAST(:#{#filter.purchaseDateFrom} AS DATE) IS NULL OR pc.purchase_date >= CAST(:#{#filter.purchaseDateFrom} AS DATE))
+                AND (CAST(:#{#filter.purchaseDateTo} AS DATE) IS NULL OR pc.purchase_date <= CAST(:#{#filter.purchaseDateTo} AS DATE))
+                AND (CAST(:#{#filter.amountMin} AS INTEGER) IS NULL OR pi.amount >= CAST(:#{#filter.amountMin} AS INTEGER))
+                AND (CAST(:#{#filter.amountMax} AS INTEGER) IS NULL OR pi.amount <= CAST(:#{#filter.amountMax} AS INTEGER))
+                AND (CAST(:#{#filter.priceMin} AS NUMERIC) IS NULL OR pi.price >= CAST(:#{#filter.priceMin} AS NUMERIC))
+                AND (CAST(:#{#filter.priceMax} AS NUMERIC) IS NULL OR pi.price <= CAST(:#{#filter.priceMax} AS NUMERIC))
+                AND (CAST(:#{#filter.totalPriceMin} AS NUMERIC) IS NULL OR (pi.amount * pi.price) >= CAST(:#{#filter.totalPriceMin} AS NUMERIC))
+                AND (CAST(:#{#filter.totalPriceMax} AS NUMERIC) IS NULL OR (pi.amount * pi.price) <= CAST(:#{#filter.totalPriceMax} AS NUMERIC))
             """, nativeQuery = true)
     Page<PurchaseItemListRecordResponseDTO> findAllPurchaseItemRecord(
             @Param("filter") GetPurchaseItemListRequestDTO filter,

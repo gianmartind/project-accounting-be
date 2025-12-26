@@ -1,5 +1,6 @@
 package com.gmd.project_accounting_be.modules.purchase_item.dto.request;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.gmd.project_accounting_be.core.dtos.BaseGetListRequestDTO;
@@ -23,4 +24,10 @@ public class GetPurchaseItemListRequestDTO extends BaseGetListRequestDTO{
     public String storeUuid;
     public LocalDate purchaseDateFrom;
     public LocalDate purchaseDateTo;
+    public Integer amountMin;
+    public Integer amountMax;
+    public BigDecimal priceMin;
+    public BigDecimal priceMax;
+    public BigDecimal totalPriceMin;
+    public BigDecimal totalPriceMax;
 }

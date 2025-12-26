@@ -41,18 +41,23 @@ public class PurchaseController {
             @RequestParam(name = "store_uuid", required = false) String storeUuid,
             @RequestParam(name = "project_name", required = false) String projectName,
             @RequestParam(name = "project_uuid", required = false) String projectUuid,
-            @RequestParam(name = "purchase_date", required = false) LocalDate purchaseDate,
+            @RequestParam(name = "purchase_date_from", required = false) LocalDate purchaseDateFrom,
+            @RequestParam(name = "purchase_date_to", required = false) LocalDate purchaseDateTo,
             @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sort
+        ) {
         try {
             GetPurchaseListRecordRequestDTO param = GetPurchaseListRecordRequestDTO.builder()
                     .storeName(storeName)
                     .storeUuid(storeUuid)
                     .projectName(projectName)
                     .projectUuid(projectUuid)
-                    .purchaseDate(purchaseDate)
+                    .purchaseDateFrom(purchaseDateFrom)
+                    .purchaseDateTo(purchaseDateTo)
                     .page(page)
                     .size(size)
+                    .sort(sort)
                     .build();
             return purchaseService.getPurchaseRecordList(param);
         } catch (Exception e) {

@@ -4,12 +4,14 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.gmd.project_accounting_be.core.utils.CommonUtil;
 import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectRequestDTO;
 import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectRequestDTO;
+import com.gmd.project_accounting_be.modules.project.dtos.response.projections.ProjectListRecordResponse;
 import com.gmd.project_accounting_be.modules.project.entities.Project;
 import com.gmd.project_accounting_be.modules.project.repositories.ProjectRepository;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 
@@ -21,11 +23,10 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
 
-    public Page<Project> getProjectList(GetProjectRequestDTO param) {
-        Pageable pageable = PageRequest.of(param.getPage(), param.getSize());
-        Specification<Project> spec = ProjectSpecification.getSpecification(param);
-
-        return projectRepository.findAll(spec, pageable);
+    public Page<ProjectListRecordResponse> getProjectList(GetProjectRequestDTO param) {
+        Sort sort = CommonUtil.generateSort(param.getSort());
+        Pageable pageable = PageRequest.of(param.getPage(), param.getSize(), sort);
+        return projectRepository.findAllProjectListRecord(param, pageable);
     }
 
     public void deleteByUuid(String uuid) {

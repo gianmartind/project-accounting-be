@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.gmd.project_accounting_be.core.utils.CommonUtil;
 import com.gmd.project_accounting_be.modules.purchase_item.dto.request.GetPurchaseItemListRequestDTO;
 import com.gmd.project_accounting_be.modules.purchase_item.dto.response.projections.PurchaseItemListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase_item.repositories.PurchaseItemRepository;
@@ -19,7 +21,8 @@ public class PurchaseItemService {
     private final PurchaseItemRepository purchaseItemRepository;
 
     public Page<PurchaseItemListRecordResponseDTO> getPurchaseItemRecordList(GetPurchaseItemListRequestDTO param) {
-        Pageable pageable = PageRequest.of(param.getPage(), param.getSize());
+        Sort sort = CommonUtil.generateSort(param.getSort());
+        Pageable pageable = PageRequest.of(param.getPage(), param.getSize(), sort);
         return purchaseItemRepository.findAllPurchaseItemRecord(param, pageable);
     }
 

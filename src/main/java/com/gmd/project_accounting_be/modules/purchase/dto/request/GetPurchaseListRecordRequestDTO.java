@@ -16,5 +16,6 @@ public class GetPurchaseListRecordRequestDTO extends BaseGetListRequestDTO{
     public String projectUuid;
     public String storeName;
     public String storeUuid;
-    public LocalDate purchaseDate;
+    public LocalDate purchaseDateFrom;
+    public LocalDate purchaseDateTo;
 }

@@ -7,9 +7,11 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gmd.project_accounting_be.core.utils.CommonUtil;
 import com.gmd.project_accounting_be.modules.purchase.dto.request.GetPurchaseListRecordRequestDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseRequestDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseAvailableFilterOptionsResponseDTO;
@@ -32,7 +34,8 @@ public class PurchaseService {
     private final StoreRepository storeRepository;
 
     public Page<PurchaseListRecordResponseDTO> getPurchaseRecordList(GetPurchaseListRecordRequestDTO param) {
-        Pageable pageable = PageRequest.of(param.getPage(), param.getSize());
+        Sort sort = CommonUtil.generateSort(param.getSort());
+        Pageable pageable = PageRequest.of(param.getPage(), param.getSize(), sort);
         return purchaseRepository.findAllPurchaseRecord(param, pageable);
     }
 

@@ -8,7 +8,7 @@ public interface PurchaseItemListRecordResponseDTO {
     String getType();
     Integer getAmount();
     String getUnit();
-    BigDecimal getUnitPrice();
+    BigDecimal getPrice();
     BigDecimal getTotalPrice();
     String getBrand();
     String getCategory();
@@ -16,6 +16,6 @@ public interface PurchaseItemListRecordResponseDTO {
     String getProjectUuid();
     String getStoreName();
     String getStoreUuid();
+    String getPurchaseUuid();
     LocalDate getPurchaseDate();
-
 } 
