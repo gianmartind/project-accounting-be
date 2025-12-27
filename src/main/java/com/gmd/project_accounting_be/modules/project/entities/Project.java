@@ -30,6 +30,12 @@ public class Project {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "owner")
+    private String owner;
+
+    @Column(name = "city")
+    private String city;
+
     @Column(name = "address")
     private String address;
 

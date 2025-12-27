@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gmd.project_accounting_be.core.utils.CommonUtil;
 import com.gmd.project_accounting_be.modules.purchase.dto.request.GetPurchaseListRecordRequestDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseRequestDTO;
-import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseAvailableFilterOptionsResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseDetailResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.PurchaseListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
@@ -108,15 +107,6 @@ public class PurchaseService {
                     .build();
         }
         return null;
-    }
-
-    public PurchaseAvailableFilterOptionsResponseDTO getAvailableFilterOptions() {
-        List<String> projectOptions = purchaseRepository.findAllAvailableProject();
-        List<String> storeOptions = purchaseRepository.findAllAvailableStore();
-        return PurchaseAvailableFilterOptionsResponseDTO.builder()
-                .projectOptions(projectOptions)
-                .storeOptions(storeOptions)
-                .build();
     }
 
     private void assignPurchaseUuidToItems(String purchaseUuid, List<PurchaseItem> items) {

@@ -50,6 +50,8 @@ public class ProjectService {
         if (existing.isPresent()) {
             Project existingData = existing.get();
             existingData.setName(body.getName());
+            existingData.setOwner(body.getOwner());
+            existingData.setCity(body.getCity());
             existingData.setAddress(body.getAddress());
             existingData.setStartDate(body.getStartDate());
             existingData.setEndDate(body.getEndDate());
@@ -66,6 +68,8 @@ public class ProjectService {
     public Project insert(UpsertProjectRequestDTO body) {
         Project toInsert = Project.builder()
                 .name(body.getName())
+                .owner(body.getOwner())
+                .city(body.getCity())
                 .address(body.getAddress())
                 .startDate(body.getStartDate())
                 .endDate(body.getEndDate())

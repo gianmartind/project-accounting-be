@@ -1,7 +1,9 @@
 package com.gmd.project_accounting_be.modules.purchase_item.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import com.gmd.project_accounting_be.modules.purchase_item.dto.response.projections.PurchaseItemSummaryDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,23 @@ public class PurchaseItemService {
         Sort sort = CommonUtil.generateSort(param.getSort());
         Pageable pageable = PageRequest.of(param.getPage(), param.getSize(), sort);
         return purchaseItemRepository.findAllPurchaseItemRecord(param, pageable);
+    }
+
+    public BigDecimal getTotalPriceByProjectUuid(String projectUuid) {
+        try {
+            BigDecimal totalPrice = purchaseItemRepository.countTotalPriceByProjectUuid(projectUuid);
+            return totalPrice != null ? totalPrice : BigDecimal.ZERO;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public PurchaseItemSummaryDTO getPurchaseSummary(GetPurchaseItemListRequestDTO param) {
+        try {
+            return purchaseItemRepository.calculatePurchaseItemSummary(param);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public List<String> getAllItemTypes() {

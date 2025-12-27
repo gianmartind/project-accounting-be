@@ -11,8 +11,10 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @SuperBuilder
-public class GetProjectRequestDTO extends BaseGetListRequestDTO{
+public class GetProjectRequestDTO extends BaseGetListRequestDTO {
     public String name;
+    public String owner;
+    public String city;
     public String address;
     public LocalDate startDateFrom;
     public LocalDate startDateTo;

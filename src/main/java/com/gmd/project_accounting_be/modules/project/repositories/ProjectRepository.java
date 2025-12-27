@@ -21,10 +21,12 @@ public interface ProjectRepository extends CrudRepository<Project, String>, JpaS
     Optional<Project> findById(@NonNull String id);
 
     @Query(value = """
-            SELECT pj.uuid as uuid, pj.name as name, pj.address as address,
-                   pj.start_date as startDate, pj.end_date as endDate, pj.notes as notes
+            SELECT pj.uuid as uuid, pj.name as name, pj.owner as owner, pj.city as city,
+                   pj.address as address, pj.start_date as startDate, pj.end_date as endDate, pj.notes as notes
             FROM project pj
             WHERE (CAST(:#{#filter.name} AS VARCHAR) IS NULL OR LOWER(pj.name) LIKE LOWER(CAST(:#{#filter.name} AS VARCHAR)))
+                AND (CAST(:#{#filter.owner} AS VARCHAR) IS NULL OR LOWER(pj.owner) LIKE LOWER(CAST(:#{#filter.owner} AS VARCHAR)))
+                AND (CAST(:#{#filter.city} AS VARCHAR) IS NULL OR LOWER(pj.city) LIKE LOWER(CAST(:#{#filter.city} AS VARCHAR)))
                 AND (CAST(:#{#filter.address} AS VARCHAR) IS NULL OR LOWER(pj.address) LIKE LOWER(CAST(:#{#filter.address} AS VARCHAR)))
                 AND (CAST(:#{#filter.startDateFrom} AS DATE) IS NULL OR pj.start_date >= CAST(:#{#filter.startDateFrom} AS DATE))
                 AND (CAST(:#{#filter.startDateTo} AS DATE) IS NULL OR pj.start_date <= CAST(:#{#filter.startDateTo} AS DATE))

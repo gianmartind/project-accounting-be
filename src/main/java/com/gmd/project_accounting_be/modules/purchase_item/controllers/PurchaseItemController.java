@@ -1,5 +1,6 @@
 package com.gmd.project_accounting_be.modules.purchase_item.controllers;
 
+import com.gmd.project_accounting_be.modules.purchase_item.dto.response.projections.PurchaseItemSummaryDTO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -71,6 +72,60 @@ public class PurchaseItemController {
                 .sort(sort)
                 .build();
             return purchaseItemService.getPurchaseItemRecordList(param);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @GetMapping("/summary")
+    public PurchaseItemSummaryDTO getPurchaseSummary(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String unit,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String category,
+            @RequestParam(name = "project_name", required = false) String projectName,
+            @RequestParam(name = "project_uuid", required = false) String projectUuid,
+            @RequestParam(name = "store_name", required = false) String storeName,
+            @RequestParam(name = "store_uuid", required = false) String storeUuid,
+            @RequestParam(name = "purchase_date_from", required = false) LocalDate purchaseDateFrom,
+            @RequestParam(name = "purchase_date_to", required = false) LocalDate purchaseDateTo,
+            @RequestParam(name = "amount_min", required = false) Integer amountMin,
+            @RequestParam(name = "amount_max", required = false) Integer amountMax,
+            @RequestParam(name = "price_min", required = false) BigDecimal priceMin,
+            @RequestParam(name = "price_max", required = false) BigDecimal priceMax,
+            @RequestParam(name = "total_price_min", required = false) BigDecimal totalPriceMin,
+            @RequestParam(name = "total_price_max", required = false) BigDecimal totalPriceMax) {
+        try {
+            GetPurchaseItemListRequestDTO param = GetPurchaseItemListRequestDTO.builder()
+                    .name(name)
+                    .type(type)
+                    .unit(unit)
+                    .brand(brand)
+                    .category(category)
+                    .projectName(projectName)
+                    .projectUuid(projectUuid)
+                    .storeName(storeName)
+                    .storeUuid(storeUuid)
+                    .purchaseDateFrom(purchaseDateFrom)
+                    .purchaseDateTo(purchaseDateTo)
+                    .amountMin(amountMin)
+                    .amountMax(amountMax)
+                    .priceMin(priceMin)
+                    .priceMax(priceMax)
+                    .totalPriceMin(totalPriceMin)
+                    .totalPriceMax(totalPriceMax)
+                    .build();
+            return purchaseItemService.getPurchaseSummary(param);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @GetMapping("/total-project-price")
+    public BigDecimal getTotalPriceByProjectUuid(@RequestParam(name = "project_uuid") String projectUuid) {
+        try {
+            return purchaseItemService.getTotalPriceByProjectUuid(projectUuid);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

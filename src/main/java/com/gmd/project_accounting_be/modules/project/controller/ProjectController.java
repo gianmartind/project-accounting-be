@@ -38,6 +38,8 @@ public class ProjectController {
     public Page<ProjectListRecordResponse> getProjectList(
         @RequestParam(required = false) String name, 
         @RequestParam(required = false) String address,
+        @RequestParam(required = false) String owner,
+        @RequestParam(required = false) String city,
         @RequestParam(name = "start_date_from", required = false) LocalDate startDateFrom,
         @RequestParam(name = "start_date_to", required = false) LocalDate startDateTo,
         @RequestParam(name = "end_date_from", required = false) LocalDate endDateFrom,
@@ -53,6 +55,8 @@ public class ProjectController {
 
             GetProjectRequestDTO param = GetProjectRequestDTO.builder()
                 .name(name)
+                .owner(owner)
+                .city(city)
                 .address(address)
                 .startDateFrom(startDateFrom)
                 .startDateTo(startDateTo)

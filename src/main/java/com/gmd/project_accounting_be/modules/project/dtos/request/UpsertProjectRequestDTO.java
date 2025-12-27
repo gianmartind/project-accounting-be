@@ -17,6 +17,12 @@ public class UpsertProjectRequestDTO {
     private String name;
 
     @NotBlank
+    private String owner;
+
+    @NotBlank
+    private String city;
+
+    @NotBlank
     private String address;
 
     @NotNull
