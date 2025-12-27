@@ -18,4 +18,5 @@ public class GetProjectRequestDTO extends BaseGetListRequestDTO{
     public LocalDate startDateTo;
     public LocalDate endDateFrom;
     public LocalDate endDateTo;
+    public Boolean completed;
 }

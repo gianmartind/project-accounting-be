@@ -42,11 +42,15 @@ public class ProjectController {
         @RequestParam(name = "start_date_to", required = false) LocalDate startDateTo,
         @RequestParam(name = "end_date_from", required = false) LocalDate endDateFrom,
         @RequestParam(name = "end_date_to", required = false) LocalDate endDateTo,
+        @RequestParam(required = false) String status,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer size,
         @RequestParam(required = false) String sort
     ) {
         try {
+            Boolean completed = null;
+            if (status != null) completed = "COMPLETED".equals(status);
+
             GetProjectRequestDTO param = GetProjectRequestDTO.builder()
                 .name(name)
                 .address(address)
@@ -54,6 +58,7 @@ public class ProjectController {
                 .startDateTo(startDateTo)
                 .endDateFrom(endDateFrom)
                 .endDateTo(endDateTo)
+                .completed(completed)
                 .page(page)
                 .size(size)
                 .sort(sort)
