@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +15,7 @@ import com.gmd.project_accounting_be.modules.project.dtos.response.projections.P
 import com.gmd.project_accounting_be.modules.project.entities.Project;
 
 @Repository
-public interface ProjectRepository extends CrudRepository<Project, String>, JpaSpecificationExecutor<Project> {
+public interface ProjectRepository extends CrudRepository<Project, String> {
     @NonNull
     Optional<Project> findById(@NonNull String id);
 

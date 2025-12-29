@@ -1,10 +1,10 @@
 package com.gmd.project_accounting_be.modules.purchase.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,9 +16,11 @@ import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.P
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
 
 @Repository
-public interface PurchaseRepository extends CrudRepository<Purchase, String>, JpaSpecificationExecutor<Purchase> {
+public interface PurchaseRepository extends CrudRepository<Purchase, String> {
     @NonNull
     Optional<Purchase> findById(@NonNull String id);
+
+    List<Purchase> findAllByProjectUuid(String projectUuid);
 
     @Query(value = """
             SELECT p.uuid as uuid, pj.name as projectName, pj.uuid as projectUuid, s.name as storeName, p.purchase_date as purchaseDate, sum(pi.price * pi.amount) as totalPrice

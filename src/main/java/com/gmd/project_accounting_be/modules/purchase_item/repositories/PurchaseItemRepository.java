@@ -29,6 +29,10 @@ public interface PurchaseItemRepository extends CrudRepository<PurchaseItem, Str
         """, nativeQuery = true)
     BigDecimal countTotalPriceByProjectUuid(String projectUuid);
 
+    long deleteByPurchaseUuidIn(List<String> purchaseUuids);
+
+    long deleteByPurchaseUuid(String purchaseUuid);
+
     List<PurchaseItem> findAllByPurchaseUuid(String purchaseUuid);
 
     @Query(value = "SELECT DISTINCT type FROM purchase_item", nativeQuery = true)
@@ -44,8 +48,8 @@ public interface PurchaseItemRepository extends CrudRepository<PurchaseItem, Str
     List<String> findAllDistinctBrand();
 
     @Query(value = """
-            SELECT pc.purchase_date as purchaseDate, st.name as storeName, pj.name as projectName, 
-                    pi.name, pi.type, pi.brand, pi.category, pi.amount, pi.unit, 
+            SELECT pc.purchase_date as purchaseDate, st.name as storeName, pj.name as projectName,
+                    pi.name, pi.type, pi.brand, pi.category, pi.amount, pi.unit,
                     pi.price, pi.amount * pi.price as totalPrice, 
                     pc.uuid as purchaseUuid, st.uuid as storeUuid, pj.uuid as projectUuid
             FROM purchase_item pi

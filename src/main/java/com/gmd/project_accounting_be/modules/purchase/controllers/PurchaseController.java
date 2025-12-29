@@ -9,7 +9,6 @@ import com.gmd.project_accounting_be.modules.purchase.dto.request.GetPurchaseLis
 import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseRequestDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseDetailResponseDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.PurchaseListRecordResponseDTO;
-import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
 import com.gmd.project_accounting_be.modules.purchase.services.PurchaseService;
 
 import jakarta.validation.Valid;
@@ -83,9 +82,9 @@ public class PurchaseController {
     }
 
     @PostMapping("/delete/{uuid}")
-    public Purchase deletePurchase(@PathVariable String uuid) {
+    public void deletePurchase(@PathVariable String uuid) {
         try {
-            return null;
+            purchaseService.deleteByUuid(uuid);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

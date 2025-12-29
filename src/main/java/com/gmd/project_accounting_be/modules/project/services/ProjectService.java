@@ -1,7 +1,11 @@
 package com.gmd.project_accounting_be.modules.project.services;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
+import com.gmd.project_accounting_be.modules.purchase.repositories.PurchaseRepository;
+import com.gmd.project_accounting_be.modules.purchase_item.repositories.PurchaseItemRepository;
 import org.springframework.stereotype.Service;
 
 import com.gmd.project_accounting_be.core.utils.CommonUtil;
@@ -22,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final PurchaseRepository purchaseRepository;
+    private final PurchaseItemRepository purchaseItemRepository;
 
     public Page<ProjectListRecordResponse> getProjectList(GetProjectRequestDTO param) {
         Sort sort = CommonUtil.generateSort(param.getSort());
@@ -31,18 +37,18 @@ public class ProjectService {
 
     public void deleteByUuid(String uuid) {
         Optional<Project> existing = projectRepository.findById(uuid);
-        if (existing.isPresent()) {
-            projectRepository.delete(existing.get());
-        }
+        existing.ifPresent(projectRepository::delete);
+        List<Purchase> linkedPurchases = purchaseRepository.findAllByProjectUuid(uuid);
+        List<String> purchaseUuids = linkedPurchases.stream()
+                .map(Purchase::getUuid)
+                .toList();
+        purchaseItemRepository.deleteByPurchaseUuidIn(purchaseUuids);
+        purchaseRepository.deleteAll(linkedPurchases);
     }
 
     public Project getByUuid(String uuid) {
         Optional<Project> optionalProject = projectRepository.findById(uuid);
-        if (optionalProject.isPresent()) {
-            return optionalProject.get();
-        } else {
-            return null;
-        }
+        return optionalProject.orElse(null);
     }
 
     public Project updateByUuid(String uuid, UpsertProjectRequestDTO body) {

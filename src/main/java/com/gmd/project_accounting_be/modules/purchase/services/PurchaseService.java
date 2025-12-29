@@ -40,7 +40,7 @@ public class PurchaseService {
 
     @Transactional
     public UpsertPurchaseRequestDTO insert(UpsertPurchaseRequestDTO body) {
-        String storeUuid = "";
+        String storeUuid;
         storeUuid = findOrInsertStoreByName(body.getStoreName());
         Purchase toInsert = Purchase.builder()
                         .purchaseDate(body.getPurchaseDate())
@@ -49,8 +49,7 @@ public class PurchaseService {
                         .notes(body.getNotes())
                         .build();
         purchaseRepository.save(toInsert);
-        List<PurchaseItem> itemsToInsert = new ArrayList<>();
-        itemsToInsert.addAll(body.getItems());
+        List<PurchaseItem> itemsToInsert = new ArrayList<>(body.getItems());
         assignPurchaseUuidToItems(storeUuid, itemsToInsert);
         purchaseItemRepository.saveAll(itemsToInsert);
         return body;
@@ -92,8 +91,7 @@ public class PurchaseService {
             purchaseItemRepository.deleteAll(existingItems);
 
             // re-insert purchase items with items from body
-            List<PurchaseItem> itemsToInsert = new ArrayList<>();
-            itemsToInsert.addAll(body.getItems());
+            List<PurchaseItem> itemsToInsert = new ArrayList<>(body.getItems());
             assignPurchaseUuidToItems(uuid, itemsToInsert);
             purchaseItemRepository.saveAll(itemsToInsert);
 
@@ -107,6 +105,12 @@ public class PurchaseService {
                     .build();
         }
         return null;
+    }
+
+    public void deleteByUuid(String uuid) {
+        Optional<Purchase> existing = purchaseRepository.findById(uuid);
+        purchaseItemRepository.deleteByPurchaseUuid(uuid);
+        existing.ifPresent(purchaseRepository::delete);
     }
 
     private void assignPurchaseUuidToItems(String purchaseUuid, List<PurchaseItem> items) {
