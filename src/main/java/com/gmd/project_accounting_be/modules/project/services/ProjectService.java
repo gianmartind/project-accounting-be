@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class ProjectService {
         return projectRepository.findAllProjectListRecord(param, pageable);
     }
 
+    @Transactional
     public void deleteByUuid(String uuid) {
         Optional<Project> existing = projectRepository.findById(uuid);
         existing.ifPresent(projectRepository::delete);

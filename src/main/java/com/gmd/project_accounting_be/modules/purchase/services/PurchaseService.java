@@ -39,7 +39,7 @@ public class PurchaseService {
     }
 
     @Transactional
-    public UpsertPurchaseRequestDTO insert(UpsertPurchaseRequestDTO body) {
+    public Purchase insert(UpsertPurchaseRequestDTO body) {
         String storeUuid;
         storeUuid = findOrInsertStoreByName(body.getStoreName());
         Purchase toInsert = Purchase.builder()
@@ -48,11 +48,11 @@ public class PurchaseService {
                         .projectUuid(body.getProjectUuid())
                         .notes(body.getNotes())
                         .build();
-        purchaseRepository.save(toInsert);
+        Purchase inserted = purchaseRepository.save(toInsert);
         List<PurchaseItem> itemsToInsert = new ArrayList<>(body.getItems());
-        assignPurchaseUuidToItems(storeUuid, itemsToInsert);
+        assignPurchaseUuidToItems(inserted.getUuid(), itemsToInsert);
         purchaseItemRepository.saveAll(itemsToInsert);
-        return body;
+        return inserted;
     }
 
     public PurchaseDetailResponseDTO getDetail(String uuid) {
@@ -107,6 +107,7 @@ public class PurchaseService {
         return null;
     }
 
+    @Transactional
     public void deleteByUuid(String uuid) {
         Optional<Purchase> existing = purchaseRepository.findById(uuid);
         purchaseItemRepository.deleteByPurchaseUuid(uuid);

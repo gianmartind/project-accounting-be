@@ -1,5 +1,6 @@
 package com.gmd.project_accounting_be.modules.purchase.controllers;
 
+import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -64,7 +65,7 @@ public class PurchaseController {
     }
 
     @PostMapping("/insert")
-    public UpsertPurchaseRequestDTO insertPurchase(@RequestBody @Valid UpsertPurchaseRequestDTO body) {
+    public Purchase insertPurchase(@RequestBody @Valid UpsertPurchaseRequestDTO body) {
         try {
             return purchaseService.insert(body);
         } catch (Exception e) {
