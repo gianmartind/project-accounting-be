@@ -63,7 +63,7 @@ public class PurchaseItemService {
 
     public List<String> getAllItemCategories() {
         try {
-            return purchaseItemRepository.findAllDistinctCategory();
+            return purchaseItemRepository.findAllDistinctCategories();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -71,7 +71,7 @@ public class PurchaseItemService {
 
     public List<String> getAllItemBrands() {
         try {
-            return purchaseItemRepository.findAllDistinctBrand();
+            return purchaseItemRepository.findAllDistinctBrands();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

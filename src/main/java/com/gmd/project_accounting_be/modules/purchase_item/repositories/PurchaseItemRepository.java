@@ -35,18 +35,6 @@ public interface PurchaseItemRepository extends CrudRepository<PurchaseItem, Str
 
     List<PurchaseItem> findAllByPurchaseUuid(String purchaseUuid);
 
-    @Query(value = "SELECT DISTINCT type FROM purchase_item", nativeQuery = true)
-    List<String> findAllDistinctTypes();
-
-    @Query(value = "SELECT DISTINCT unit FROM purchase_item", nativeQuery = true)
-    List<String> findAllDistinctUnits();
-
-    @Query(value = "SELECT DISTINCT category FROM purchase_item", nativeQuery = true)
-    List<String> findAllDistinctCategory();
-
-    @Query(value = "SELECT DISTINCT brand FROM purchase_item", nativeQuery = true)
-    List<String> findAllDistinctBrand();
-
     @Query(value = """
             SELECT pc.purchase_date as purchaseDate, st.name as storeName, pj.name as projectName,
                     pi.name, pi.type, pi.brand, pi.category, pi.amount, pi.unit,
@@ -105,4 +93,17 @@ public interface PurchaseItemRepository extends CrudRepository<PurchaseItem, Str
                 AND (CAST(:#{#filter.totalPriceMax} AS NUMERIC) IS NULL OR (pi.amount * pi.price) <= CAST(:#{#filter.totalPriceMax} AS NUMERIC))
             """, nativeQuery = true)
     PurchaseItemSummaryDTO calculatePurchaseItemSummary(@Param("filter") GetPurchaseItemListRequestDTO filter);
+
+    // Previously entered values
+    @Query(value = "SELECT type FROM list_types", nativeQuery = true)
+    List<String> findAllDistinctTypes();
+
+    @Query(value = "SELECT unit FROM list_units", nativeQuery = true)
+    List<String> findAllDistinctUnits();
+
+    @Query(value = "SELECT category FROM list_categories", nativeQuery = true)
+    List<String> findAllDistinctCategories();
+
+    @Query(value = "SELECT brand FROM list_brands", nativeQuery = true)
+    List<String> findAllDistinctBrands();
 }
