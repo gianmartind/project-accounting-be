@@ -3,8 +3,10 @@ package com.gmd.project_accounting_be.modules.purchase.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import com.gmd.project_accounting_be.modules.purchase_item.entities.PurchaseItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +18,7 @@ import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.P
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
 
 @Repository
-public interface PurchaseRepository extends CrudRepository<Purchase, String> {
+public interface PurchaseRepository extends CrudRepository<Purchase, String>, JpaSpecificationExecutor<PurchaseItem> {
     @NonNull
     Optional<Purchase> findById(@NonNull String id);
 
@@ -25,7 +27,7 @@ public interface PurchaseRepository extends CrudRepository<Purchase, String> {
     @Query(value = """
             SELECT p.uuid as uuid, pj.name as projectName, pj.uuid as projectUuid, s.name as storeName, p.purchase_date as purchaseDate, sum(pi.price * pi.amount) as totalPrice
             FROM purchase p
-                LEFT JOIN purchase_item pi ON p.uuid = pi.purchase_uuid
+                JOIN purchase_item pi ON p.uuid = pi.purchase_uuid
                 JOIN project pj ON p.project_uuid = pj.uuid
                 JOIN store s ON p.store_uuid = s.uuid
             WHERE (CAST(:#{#filter.projectName} AS VARCHAR) IS NULL OR LOWER(pj.name) LIKE LOWER(CAST(:#{#filter.projectName} AS VARCHAR)))
