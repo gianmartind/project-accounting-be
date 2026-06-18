@@ -3,6 +3,7 @@ package com.gmd.project_accounting_be.modules.purchase.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.PurchaseSimpleDetailDTO;
 import com.gmd.project_accounting_be.modules.purchase_item.entities.PurchaseItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,4 +42,12 @@ public interface PurchaseRepository extends CrudRepository<Purchase, String>, Jp
     Page<PurchaseListRecordResponseDTO> findAllPurchaseRecord(
             @Param("filter") GetPurchaseListRecordRequestDTO filter,
             Pageable pageable);
+
+    @Query(value = """
+            SELECT p.uuid as uuid, s.store_name as storeName, p.project_uuid as projectUuid,
+                    p.purchase_date as purchaseDate, p.notes as notes
+            FROM purchase p JOIN store s ON p.store_uuid = s.uuid
+            WHERE p.uuid = ?1
+            """, nativeQuery = true)
+    PurchaseSimpleDetailDTO findSimpleDetailById(String id);
 }

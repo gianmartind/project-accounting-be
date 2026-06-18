@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.gmd.project_accounting_be.modules.purchase.dto.response.projections.PurchaseSimpleDetailDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,20 +57,14 @@ public class PurchaseService {
     }
 
     public PurchaseDetailResponseDTO getDetail(String uuid) {
-        Optional<Purchase> purchaseOpt = purchaseRepository.findById(uuid);
-        if (purchaseOpt.isEmpty()) {
-            return null;
-        }
-        Purchase purchase = purchaseOpt.get();
-        Optional<Store> storeOpt = storeRepository.findById(purchase.getStoreUuid());
-        String storeName = storeOpt.map(Store::getName).orElse("");
+        PurchaseSimpleDetailDTO simpleDetail = purchaseRepository.findSimpleDetailById(uuid);
         List<PurchaseItem> items = purchaseItemRepository.findAllByPurchaseUuid(uuid);
         return PurchaseDetailResponseDTO.builder()
-                .uuid(purchase.getUuid())
-                .purchaseDate(purchase.getPurchaseDate())
-                .storeName(storeName)
-                .projectUuid(purchase.getProjectUuid())
-                .notes(purchase.getNotes())
+                .uuid(simpleDetail.getUuid())
+                .purchaseDate(simpleDetail.getPurchaseDate())
+                .storeName(simpleDetail.getStoreName())
+                .projectUuid(simpleDetail.getProjectUuid())
+                .notes(simpleDetail.getNotes())
                 .items(items)
                 .build();
     }
