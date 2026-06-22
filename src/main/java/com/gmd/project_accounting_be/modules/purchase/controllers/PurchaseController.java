@@ -3,9 +3,7 @@ package com.gmd.project_accounting_be.modules.purchase.controllers;
 import com.gmd.project_accounting_be.modules.purchase.entities.Purchase;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.gmd.project_accounting_be.modules.project.constants.ProjectErrorMessages;
 import com.gmd.project_accounting_be.modules.purchase.dto.request.GetPurchaseListRecordRequestDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.request.UpsertPurchaseRequestDTO;
 import com.gmd.project_accounting_be.modules.purchase.dto.response.PurchaseDetailResponseDTO;
@@ -18,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,7 +75,7 @@ public class PurchaseController {
         try {
             return purchaseService.getDetail(uuid);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ProjectErrorMessages.NOT_FOUND);
+            throw new RuntimeException(e.getMessage());
         }
     }
 

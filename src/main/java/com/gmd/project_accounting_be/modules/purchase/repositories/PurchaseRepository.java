@@ -44,7 +44,7 @@ public interface PurchaseRepository extends CrudRepository<Purchase, String>, Jp
             Pageable pageable);
 
     @Query(value = """
-            SELECT p.uuid as uuid, s.store_name as storeName, p.project_uuid as projectUuid,
+            SELECT p.uuid as uuid, s.name as storeName, p.project_uuid as projectUuid,
                     p.purchase_date as purchaseDate, p.notes as notes
             FROM purchase p JOIN store s ON p.store_uuid = s.uuid
             WHERE p.uuid = ?1
