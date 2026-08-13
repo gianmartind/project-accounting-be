@@ -7,7 +7,7 @@ import com.gmd.project_accounting_be.core.constants.BaseErrorMessages;
 import com.gmd.project_accounting_be.modules.project.constants.ProjectErrorMessages;
 import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectRequestDTO;
 import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectRequestDTO;
-import com.gmd.project_accounting_be.modules.project.dtos.response.projections.ProjectListRecordResponse;
+import com.gmd.project_accounting_be.modules.project.dtos.response.projections.ProjectListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.project.entities.Project;
 import com.gmd.project_accounting_be.modules.project.services.ProjectService;
 
@@ -35,7 +35,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @GetMapping("/list")
-    public Page<ProjectListRecordResponse> getProjectList(
+    public Page<ProjectListRecordResponseDTO> getProjectList(
         @RequestParam(required = false) String name, 
         @RequestParam(required = false) String address,
         @RequestParam(required = false) String owner,

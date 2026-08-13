@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.gmd.project_accounting_be.core.utils.CommonUtil;
 import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectRequestDTO;
 import com.gmd.project_accounting_be.modules.project.dtos.request.UpsertProjectRequestDTO;
-import com.gmd.project_accounting_be.modules.project.dtos.response.projections.ProjectListRecordResponse;
+import com.gmd.project_accounting_be.modules.project.dtos.response.projections.ProjectListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.project.entities.Project;
 import com.gmd.project_accounting_be.modules.project.repositories.ProjectRepository;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +30,7 @@ public class ProjectService {
     private final PurchaseRepository purchaseRepository;
     private final PurchaseItemRepository purchaseItemRepository;
 
-    public Page<ProjectListRecordResponse> getProjectList(GetProjectRequestDTO param) {
+    public Page<ProjectListRecordResponseDTO> getProjectList(GetProjectRequestDTO param) {
         Sort sort = CommonUtil.generateSort(param.getSort());
         Pageable pageable = PageRequest.of(param.getPage(), param.getSize(), sort);
         return projectRepository.findAllProjectListRecord(param, pageable);

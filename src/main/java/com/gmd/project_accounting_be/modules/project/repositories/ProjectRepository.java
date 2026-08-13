@@ -11,7 +11,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
 import com.gmd.project_accounting_be.modules.project.dtos.request.GetProjectRequestDTO;
-import com.gmd.project_accounting_be.modules.project.dtos.response.projections.ProjectListRecordResponse;
+import com.gmd.project_accounting_be.modules.project.dtos.response.projections.ProjectListRecordResponseDTO;
 import com.gmd.project_accounting_be.modules.project.entities.Project;
 
 @Repository
@@ -34,5 +34,5 @@ public interface ProjectRepository extends CrudRepository<Project, String> {
                 AND (CAST(:#{#filter.completed} AS BOOLEAN) IS NULL OR (CASE WHEN CAST(:#{#filter.completed} AS BOOLEAN) = true THEN pj.end_date IS NOT NULL ELSE pj.end_date IS NULL END))
             """, nativeQuery = true
         )
-    Page<ProjectListRecordResponse> findAllProjectListRecord(@Param("filter") GetProjectRequestDTO filter, Pageable pageable);
+    Page<ProjectListRecordResponseDTO> findAllProjectListRecord(@Param("filter") GetProjectRequestDTO filter, Pageable pageable);
 }

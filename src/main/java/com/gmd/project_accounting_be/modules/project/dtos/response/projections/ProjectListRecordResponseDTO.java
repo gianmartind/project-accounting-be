@@ -1,6 +1,6 @@
 package com.gmd.project_accounting_be.modules.project.dtos.response.projections;
 
-public interface ProjectListRecordResponse {
+public interface ProjectListRecordResponseDTO {
     String getUuid();
     String getName();
     String getOwner();
