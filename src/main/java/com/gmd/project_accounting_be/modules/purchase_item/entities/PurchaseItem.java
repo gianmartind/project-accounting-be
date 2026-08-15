@@ -33,8 +33,8 @@ public class PurchaseItem {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "amount")
-    private Integer amount;
+    @Column(name = "amount", columnDefinition = "NUMERIC")
+    private Float amount;
 
     @Column(name = "unit")
     private String unit;

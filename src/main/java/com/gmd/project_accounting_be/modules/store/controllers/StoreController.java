@@ -2,7 +2,8 @@ package com.gmd.project_accounting_be.modules.store.controllers;
 
 import com.gmd.project_accounting_be.core.constants.BaseErrorMessages;
 import com.gmd.project_accounting_be.modules.store.dto.request.GetStoreRequestDTO;
-import com.gmd.project_accounting_be.modules.store.dto.response.StoreListRecordResponse;
+import com.gmd.project_accounting_be.modules.store.dto.response.StoreListRecordResponseDTO;
+import com.gmd.project_accounting_be.modules.store.dto.response.projections.StoreListRecordSimpleDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,11 +35,11 @@ public class StoreController {
     }
 
     @GetMapping("/list")
-    public Page<StoreListRecordResponse> getStoreList(
+    public Page<StoreListRecordResponseDTO> getStoreList(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String address,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
             @RequestParam(required = false) String sort
     ) {
         try {
