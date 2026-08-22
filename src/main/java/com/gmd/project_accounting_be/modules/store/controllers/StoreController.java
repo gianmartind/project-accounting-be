@@ -38,6 +38,7 @@ public class StoreController {
     public Page<StoreListRecordResponseDTO> getStoreList(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String address,
+            @RequestParam(required = false) List<String> tagList,
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size,
             @RequestParam(required = false) String sort
@@ -46,6 +47,7 @@ public class StoreController {
             GetStoreRequestDTO param = GetStoreRequestDTO.builder()
                     .name(name)
                     .address(address)
+                    .tagList(tagList)
                     .page(page)
                     .size(size)
                     .sort(sort)

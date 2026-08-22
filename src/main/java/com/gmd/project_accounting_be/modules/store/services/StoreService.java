@@ -42,7 +42,12 @@ public class StoreService {
         Pageable pageable = PageRequest.of(param.getPage(), param.getSize(), sort);
 
         // fetch store list
-        Page<StoreListRecordSimpleDTO> storeList = storeRepository.findAllStoreListRecord(param, pageable);
+        Page<StoreListRecordSimpleDTO> storeList;
+        if (param.getTagList() != null && param.getTagList().size() > 0) {
+            storeList = storeRepository.findAllStoreListRecordWithTagFilter(param, pageable);
+        } else {
+            storeList = storeRepository.findAllStoreListRecord(param, pageable);
+        }
         // fetch tag list of retrieved stores
         List<String> storeUuidList = storeList.getContent().stream().map(StoreListRecordSimpleDTO::getUuid).toList();
         List<StoreTagDTO> storeTagList = storeRepository.getStoreTagList(storeUuidList);
@@ -63,8 +68,7 @@ public class StoreService {
         Page<StoreListRecordResponseDTO> responsePage = new PageImpl<>(
                 responseList,
                 storeList.getPageable(),
-                storeList.getTotalElements()
-            );
+                storeList.getTotalElements());
 
         return responsePage;
     }
